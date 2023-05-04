@@ -11,6 +11,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.google.accompanist.web.WebView
+import com.google.accompanist.web.rememberWebViewState
 import com.nakyoung.navermap.ui.theme.NavermapTheme
 import com.naver.maps.map.compose.ExperimentalNaverMapApi
 import com.naver.maps.map.compose.NaverMap
@@ -29,6 +31,8 @@ class MainActivity : ComponentActivity() {
                     NaverMap(
                         modifier = Modifier.fillMaxSize()
                     )
+                    val state = rememberWebViewState(url = "nmap://map?&appname=com.nakyoung.navermap")
+                    WebView(state = state)
                 }
             }
         }

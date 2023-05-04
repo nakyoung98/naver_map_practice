@@ -65,4 +65,7 @@ dependencies {
     implementation 'com.naver.maps:map-sdk:3.16.0'
     // 네이버 지도 compose SDK
     implementation 'io.github.fornewid:naver-map-compose:1.3.3'
+
+    //accompanist webview
+    implementation 'com.google.accompanist:accompanist-webview:0.30.1'
 }

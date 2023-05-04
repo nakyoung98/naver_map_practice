@@ -3,6 +3,7 @@ package com.nakyoung.navermap
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -11,8 +12,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.nakyoung.navermap.ui.theme.NavermapTheme
+import com.naver.maps.map.compose.ExperimentalNaverMapApi
+import com.naver.maps.map.compose.NaverMap
 
 class MainActivity : ComponentActivity() {
+    @OptIn(ExperimentalNaverMapApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -22,22 +26,18 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    Greeting("Android")
+                    NaverMap(
+                        modifier = Modifier.fillMaxSize()
+                    )
                 }
             }
         }
     }
 }
 
+@OptIn(ExperimentalNaverMapApi::class)
+@Preview
 @Composable
-fun Greeting(name: String) {
-    Text(text = "Hello $name!")
-}
-
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    NavermapTheme {
-        Greeting("Android")
-    }
+fun MapPreview() {
+    NaverMap(modifier = Modifier.fillMaxSize())
 }

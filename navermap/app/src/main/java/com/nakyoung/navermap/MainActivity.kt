@@ -3,6 +3,7 @@ package com.nakyoung.navermap
 import android.Manifest
 import android.content.pm.PackageManager
 import android.location.Location
+import android.location.LocationManager
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -12,8 +13,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -34,8 +34,6 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        Log.i("Location","HELLOOO")
-
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this).apply {
             if (ActivityCompat.checkSelfPermission(
                     this@MainActivity ,
@@ -50,18 +48,29 @@ class MainActivity : ComponentActivity() {
 
             }
         }
+
         setContent {
 
             val cameraPositionState: CameraPositionState = rememberCameraPositionState()
             val myLocationMarkerState: MarkerState = rememberMarkerState()
-            var myPolygonState: LatLng? = null
+            var myPolygonState by remember{ mutableStateOf(LatLng(0.0,0.0)) }
 
             fusedLocationProviderClient.lastLocation.addOnSuccessListener {
-                Log.i("Location",it.toString())
-                cameraPositionState.position = CameraPosition(LatLng(it),17.0)
-                myLocationMarkerState.position = LatLng(it)
-                myPolygonState = LatLng(it)
+                val location: Location
+                if (it == null) {
+                    location = Location(null).apply {
+                        latitude = 37.5666805
+                        longitude = 126.9936
+                    }
+                } else {
+                    location = it
+                }
+
+                cameraPositionState.position = CameraPosition(LatLng(location),17.0)
+                myLocationMarkerState.position = LatLng(location)
+                myPolygonState = LatLng(location)
             }
+
             NavermapTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(
@@ -76,12 +85,9 @@ class MainActivity : ComponentActivity() {
                             captionText = "My"
                         )
 
-                        myPolygonState?.let {
-                            PolygonOverlay(
-                                outlineWidth = 3.dp,
-                                coords = mutableListOf(myPolygonState!!, myPolygonState!!.offset(0.00001,0.00001), myPolygonState!!.offset(0.00000,0.00001)))
-                            Log.i("Location",it.toString())
-                        }
+                        PolygonOverlay(
+                            outlineWidth = 3.dp,
+                            coords = mutableListOf(myPolygonState, myPolygonState.offset(0.00001,0.00001), myPolygonState.offset(0.00000,0.00001)))
                     }
                 }
             }
